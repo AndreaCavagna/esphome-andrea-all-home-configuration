@@ -1,0 +1,1 @@
+# esphome-andrea-all-home-configuration
