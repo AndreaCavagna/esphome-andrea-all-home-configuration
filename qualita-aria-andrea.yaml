@@ -1,0 +1,76 @@
+esphome:
+  name: qualita-aria-andrea
+  comment: Sensore qualita aria IKEA camera andrea e temperatura 
+
+esp8266:
+  board: d1_mini_lite
+
+# Enable logging
+logger:
+
+mqtt:
+  broker: !secret mqtt_broker
+  
+  
+# Enable Home Assistant API
+# api:
+#   encryption:
+#     key: "S/OGno2S6t7t7GGrajPE3yWhktoCW+U7LwFL95h/7GY="
+
+ota:
+  password: "d27cda3c3f13dedf2c1d81d421276f42"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Qualita-Aria-Andrea"
+    password: "8y6ahbAEpCXW"
+
+captive_portal:
+
+
+
+uart:
+  rx_pin: D2
+  baud_rate: 9600
+
+sensor:
+  - platform: pm1006
+    pm_2_5:
+      name: "Qualita Aria Camera Andrea"
+      
+  - platform: dht
+    pin: D7
+    model: AM2302
+    temperature:
+      name: "Temperatura Camera Andrea IKEA"
+      filters:
+        - offset: -0.5
+        - median:
+            window_size: 5
+            send_every: 3
+            send_first_at: 1
+    humidity:
+      name: "Umidita Camera Andrea IKEA"
+      filters:
+        - offset: -0.5
+        - median:
+            window_size: 5
+            send_every: 3
+            send_first_at: 1
+          
+    update_interval: 30s
+    
+  - platform: wifi_signal
+    name: "WiFi Signal qualita-aria-andrea"
+    update_interval: 60s
+    filters:
+    - quantile:
+        window_size: 7
+        send_every: 4
+        send_first_at: 3
+        quantile: .9
+    

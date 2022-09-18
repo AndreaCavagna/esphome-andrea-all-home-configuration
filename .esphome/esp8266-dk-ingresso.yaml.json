@@ -1,0 +1,33 @@
+{
+  "storage_version": 1,
+  "name": "esp8266-dk-ingresso",
+  "comment": "Sensore movimento ingresso andrea danimarca",
+  "esphome_version": "2022.5.1",
+  "src_version": 1,
+  "address": "esp8266-dk-ingresso.local",
+  "web_port": null,
+  "esp_platform": "ESP8266",
+  "build_path": "esphome-andrea-all-home-configuration/.esphome/build/esp8266-dk-ingresso",
+  "firmware_bin_path": "esphome-andrea-all-home-configuration/.esphome/build/esp8266-dk-ingresso/.pioenvs/esp8266-dk-ingresso/firmware.bin",
+  "loaded_integrations": [
+    "async_tcp",
+    "binary_sensor",
+    "captive_portal",
+    "esp8266",
+    "esphome",
+    "gpio",
+    "json",
+    "logger",
+    "md5",
+    "mdns",
+    "mqtt",
+    "network",
+    "ota",
+    "preferences",
+    "sensor",
+    "socket",
+    "web_server_base",
+    "wifi",
+    "wifi_signal"
+  ]
+}

@@ -1,0 +1,84 @@
+esphome:
+  name: irrigazione-nonno
+  comment: Controllore Irrigazione Nonno
+  on_boot:
+    then:
+      - switch.turn_on: switch_irrigazione
+
+esp8266:
+  board: d1_mini_lite
+
+# Enable logging
+logger:
+
+mqtt:
+  broker: !secret mqtt_broker
+
+# Enable Home Assistant API
+# api:
+#   encryption:
+#     key: "fdjZHqpOrixaknDmcJCcZcJapmFNxu4QL1Cj+YzqWxo="
+
+ota:
+  password: "112aaeba70b29bf47da511ee689cbb7f"
+
+wifi:
+  ssid: !secret wifi_ssid_nonna
+  password: !secret wifi_password_nonna
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Irrigazione-Nonno"
+    password: "LgJPoAhQ3IsG"
+
+captive_portal:
+
+
+sensor:
+  - platform: wifi_signal
+    name: "WiFi Signal irrigazione-nonno"
+    update_interval: 60s
+    filters:
+      - quantile:
+          window_size: 7
+          send_every: 4
+          send_first_at: 3
+          quantile: .9
+    
+switch:
+  - platform: gpio
+    name: "switch irrigazione-nonno"
+    pin: D2
+    id: switch_irrigazione
+    icon: "mdi:watering-can"
+    inverted: true
+    on_turn_on:
+      then:
+        - output.turn_off: irrigazione_nonno_led_blu
+         
+        - output.turn_on: irrigazione_nonno_led_giallo
+        
+    on_turn_off:
+      then:
+        - output.turn_on: irrigazione_nonno_led_blu
+   
+        - output.turn_off: irrigazione_nonno_led_giallo
+    
+status_led:
+  pin:
+    number: D4
+    inverted: true
+    
+output:
+  - platform: gpio
+    pin: D7
+    id: irrigazione_nonno_led_blu
+    inverted: true
+    
+  - platform: gpio
+    pin: D6
+    id: irrigazione_nonno_led_giallo
+    inverted: true
+    
+
+    
