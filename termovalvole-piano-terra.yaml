@@ -1,3 +1,9 @@
+## ------------------------------------
+## ----- IL PIN D7 E ROTTO ------------
+## ------------------------------------
+
+# Qua i fili di massa sono tutti saldati insieme in un tubetto termorestringende
+
 esphome:
   name: termovalvole-piano-terra
   comment: Piano terra ESP8266 Controllore termovalvole
@@ -5,7 +11,6 @@ esphome:
   on_boot:
     then:
       - output.turn_off: gpio_d0_ground
-      - output.turn_off: gpio_d6_ground
   
 esp8266:
   board: d1_mini_lite
@@ -27,6 +32,13 @@ wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
 
+  manual_ip:
+    static_ip: 192.168.8.192
+    gateway: 192.168.8.1
+    subnet: 255.255.255.0
+    dns1: 1.1.1.1
+    dns2: 8.8.8.8
+
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
     ssid: "Termovalvole-Piano-Terra"
@@ -39,13 +51,13 @@ switch:
   - platform: gpio
     name: "Termovalvola Piano Terra"
     id: termovalvola_piano_terra
-    pin: D2
+    pin: D1
     icon: "mdi:radiator"
 
   - platform: gpio
     name: "Termovalvola Bagni"
     id: termovalvola_bagni
-    pin: D1
+    pin: D2
     icon: "mdi:radiator"
     
 sensor:
@@ -65,10 +77,6 @@ output:
     pin: D0
     id: gpio_d0_ground
 
-  - platform: gpio
-    pin: D6
-    id: gpio_d6_ground
-
 binary_sensor:
   - platform: gpio
     pin:
@@ -87,7 +95,7 @@ binary_sensor:
 
   - platform: gpio
     pin:
-      number: D7
+      number: D6
       mode:
         input: true
         pullup: true
@@ -98,11 +106,3 @@ binary_sensor:
       
     on_release:
       - switch.turn_off: termovalvola_bagni
-     
-    
-    
-    
-    
-    
-    
-    

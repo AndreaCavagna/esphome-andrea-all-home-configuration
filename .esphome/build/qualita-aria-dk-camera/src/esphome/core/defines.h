@@ -10,6 +10,7 @@
 #define USE_MDNS
 #define USE_MQTT
 #define USE_MQTT_ABBREVIATIONS
+#define USE_OTA
 #define USE_OTA_PASSWORD
 #define USE_SENSOR
 #define USE_SOCKET_IMPL_LWIP_TCP

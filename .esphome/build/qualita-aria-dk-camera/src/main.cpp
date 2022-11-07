@@ -225,8 +225,8 @@ void setup() {
   //       open_drain: false
   //       pullup: false
   //       pulldown: false
-  //     inverted: false
   //     id: esphome_esp8266_esp8266gpiopin
+  //     inverted: false
   //   baud_rate: 9600
   //   id: uart_esp8266uartcomponent
   //   rx_buffer_size: 256

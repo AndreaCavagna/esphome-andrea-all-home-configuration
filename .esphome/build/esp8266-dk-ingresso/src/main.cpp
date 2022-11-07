@@ -7,8 +7,6 @@ using std::min;
 using std::max;
 using namespace binary_sensor;
 logger::Logger *logger_logger;
-web_server_base::WebServerBase *web_server_base_webserverbase;
-captive_portal::CaptivePortal *captive_portal_captiveportal;
 wifi::WiFiComponent *wifi_wificomponent;
 mdns::MDNSComponent *mdns_mdnscomponent;
 ota::OTAComponent *ota_otacomponent;
@@ -23,7 +21,7 @@ esphome::esp8266::ESP8266GPIOPin *esphome_esp8266_esp8266gpiopin;
 wifi_signal::WiFiSignalSensor *wifi_signal_wifisignalsensor;
 sensor::QuantileFilter *sensor_quantilefilter;
 mqtt::MQTTSensorComponent *mqtt_mqttsensorcomponent;
-const uint8_t ESPHOME_ESP8266_GPIO_INITIAL_MODE[16] = {255, 255, 255, 255, INPUT, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
+const uint8_t ESPHOME_ESP8266_GPIO_INITIAL_MODE[16] = {INPUT, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 const uint8_t ESPHOME_ESP8266_GPIO_INITIAL_LEVEL[16] = {255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 #define yield() esphome::yield()
 #define millis() esphome::millis()
@@ -44,8 +42,6 @@ void setup() {
   //   early_pin_init: true
   //   board_flash_mode: dout
   esphome::esp8266::setup_preferences();
-  // async_tcp:
-  //   {}
   // esphome:
   //   name: esp8266-dk-ingresso
   //   comment: Sensore movimento ingresso andrea danimarca
@@ -69,51 +65,43 @@ void setup() {
   logger_logger->pre_setup();
   logger_logger->set_component_source("logger");
   App.register_component(logger_logger);
-  // web_server_base:
-  //   id: web_server_base_webserverbase
-  web_server_base_webserverbase = new web_server_base::WebServerBase();
-  web_server_base_webserverbase->set_component_source("web_server_base");
-  App.register_component(web_server_base_webserverbase);
-  // captive_portal:
-  //   id: captive_portal_captiveportal
-  //   web_server_base_id: web_server_base_webserverbase
-  captive_portal_captiveportal = new captive_portal::CaptivePortal(web_server_base_webserverbase);
-  captive_portal_captiveportal->set_component_source("captive_portal");
-  App.register_component(captive_portal_captiveportal);
   // wifi:
-  //   ap:
-  //     ssid: esp8266-dk-ingresso
-  //     password: Pippero64
-  //     id: wifi_wifiap
-  //     ap_timeout: 1min
+  //   manual_ip:
+  //     static_ip: 192.168.123.229
+  //     gateway: 192.168.123.1
+  //     subnet: 255.255.255.0
+  //     dns1: 0.0.0.0
+  //     dns2: 0.0.0.0
+  //   fast_connect: true
+  //   output_power: 12.0
+  //   power_save_mode: NONE
   //   id: wifi_wificomponent
   //   domain: .local
   //   reboot_timeout: 15min
-  //   power_save_mode: NONE
-  //   fast_connect: false
-  //   output_power: 20.0
   //   networks:
   //   - ssid: !secret 'wifi_ssid_dk'
   //     password: !secret 'wifi_password_dk'
-  //     id: wifi_wifiap_2
+  //     id: wifi_wifiap
   //     priority: 0.0
-  //   use_address: esp8266-dk-ingresso.local
+  //   use_address: 192.168.123.229
   wifi_wificomponent = new wifi::WiFiComponent();
-  wifi_wificomponent->set_use_address("esp8266-dk-ingresso.local");
-  wifi::WiFiAP wifi_wifiap_2 = wifi::WiFiAP();
-  wifi_wifiap_2.set_ssid("Silence of the LANs");
-  wifi_wifiap_2.set_password("123Sushi");
-  wifi_wifiap_2.set_priority(0.0f);
-  wifi_wificomponent->add_sta(wifi_wifiap_2);
+  wifi_wificomponent->set_use_address("192.168.123.229");
   wifi::WiFiAP wifi_wifiap = wifi::WiFiAP();
-  wifi_wifiap.set_ssid("esp8266-dk-ingresso");
-  wifi_wifiap.set_password("Pippero64");
-  wifi_wificomponent->set_ap(wifi_wifiap);
-  wifi_wificomponent->set_ap_timeout(60000);
+  wifi_wifiap.set_ssid("Silence of the LANs");
+  wifi_wifiap.set_password("123Sushi");
+  wifi_wifiap.set_manual_ip(wifi::ManualIP{
+      .static_ip = network::IPAddress(192, 168, 123, 229),
+      .gateway = network::IPAddress(192, 168, 123, 1),
+      .subnet = network::IPAddress(255, 255, 255, 0),
+      .dns1 = network::IPAddress(0, 0, 0, 0),
+      .dns2 = network::IPAddress(0, 0, 0, 0),
+  });
+  wifi_wifiap.set_priority(0.0f);
+  wifi_wificomponent->add_sta(wifi_wifiap);
   wifi_wificomponent->set_reboot_timeout(900000);
   wifi_wificomponent->set_power_save_mode(wifi::WIFI_POWER_SAVE_NONE);
-  wifi_wificomponent->set_fast_connect(false);
-  wifi_wificomponent->set_output_power(20.0f);
+  wifi_wificomponent->set_fast_connect(true);
+  wifi_wificomponent->set_output_power(12.0f);
   wifi_wificomponent->set_component_source("wifi");
   App.register_component(wifi_wificomponent);
   // mdns:
@@ -136,7 +124,7 @@ void setup() {
   App.register_component(ota_otacomponent);
   if (ota_otacomponent->should_enter_safe_mode(10, 300000)) return;
   // mqtt:
-  //   broker: !secret 'mqtt_broker'
+  //   broker: !secret 'mqtt_broker_local'
   //   id: mqtt_mqttclientcomponent
   //   port: 1883
   //   username: ''
@@ -172,7 +160,7 @@ void setup() {
   mqtt_mqttclientcomponent = new mqtt::MQTTClientComponent();
   mqtt_mqttclientcomponent->set_component_source("mqtt");
   App.register_component(mqtt_mqttclientcomponent);
-  mqtt_mqttclientcomponent->set_broker_address("myhomeipdk.hopto.org");
+  mqtt_mqttclientcomponent->set_broker_address("192.168.123.16");
   mqtt_mqttclientcomponent->set_broker_port(1883);
   mqtt_mqttclientcomponent->set_username("");
   mqtt_mqttclientcomponent->set_password("");
@@ -217,7 +205,7 @@ void setup() {
   // binary_sensor.gpio:
   //   platform: gpio
   //   pin:
-  //     number: 4
+  //     number: 0
   //     mode:
   //       input: true
   //       analog: false
@@ -243,7 +231,7 @@ void setup() {
   gpio_gpiobinarysensor->set_component_source("gpio.binary_sensor");
   App.register_component(gpio_gpiobinarysensor);
   esphome_esp8266_esp8266gpiopin = new esphome::esp8266::ESP8266GPIOPin();
-  esphome_esp8266_esp8266gpiopin->set_pin(4);
+  esphome_esp8266_esp8266gpiopin->set_pin(0);
   esphome_esp8266_esp8266gpiopin->set_inverted(false);
   esphome_esp8266_esp8266gpiopin->set_flags(gpio::Flags::FLAG_INPUT);
   gpio_gpiobinarysensor->set_pin(esphome_esp8266_esp8266gpiopin);
