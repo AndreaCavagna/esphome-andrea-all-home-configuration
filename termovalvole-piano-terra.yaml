@@ -5,6 +5,7 @@ esphome:
   on_boot:
     then:
       - output.turn_off: gpio_d0_ground
+      - output.turn_off: gpio_d6_ground
   
 esp8266:
   board: d1_mini_lite
@@ -38,13 +39,13 @@ switch:
   - platform: gpio
     name: "Termovalvola Piano Terra"
     id: termovalvola_piano_terra
-    pin: D1 # Prima era D2
+    pin: D2
     icon: "mdi:radiator"
 
   - platform: gpio
     name: "Termovalvola Bagni"
     id: termovalvola_bagni
-    pin: D2 # Prima era D1
+    pin: D1
     icon: "mdi:radiator"
     
 sensor:
@@ -63,6 +64,10 @@ output:
   - platform: gpio
     pin: D0
     id: gpio_d0_ground
+
+  - platform: gpio
+    pin: D6
+    id: gpio_d6_ground
 
 binary_sensor:
   - platform: gpio

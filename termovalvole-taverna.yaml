@@ -1,6 +1,9 @@
 esphome:
   name: termovalvole-taverna
-  comment: Taverna ESP8266 Controllore termovalvole
+  comment: Taverna ESP8266 Controllore termovalvole\
+  on_boot:
+    then:
+      - output.turn_off: gpio_d0_ground
 
 esp8266:
   board: d1_mini_lite
@@ -48,7 +51,13 @@ sensor:
           send_every: 4
           send_first_at: 3
           quantile: .9
-    
+
+output:
+  - platform: gpio
+    pin: D0
+    id: gpio_d0_ground
+
+
 binary_sensor:
   - platform: gpio
     pin:
