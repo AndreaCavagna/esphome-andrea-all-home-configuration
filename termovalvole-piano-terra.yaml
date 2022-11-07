@@ -6,7 +6,6 @@ esphome:
     then:
       - output.turn_off: gpio_d0_ground
   
-
 esp8266:
   board: d1_mini_lite
 
@@ -35,18 +34,17 @@ wifi:
 captive_portal:
     
 
-
 switch:
   - platform: gpio
     name: "Termovalvola Piano Terra"
     id: termovalvola_piano_terra
-    pin: D2
+    pin: D1 # Prima era D2
     icon: "mdi:radiator"
 
   - platform: gpio
     name: "Termovalvola Bagni"
     id: termovalvola_bagni
-    pin: D1
+    pin: D2 # Prima era D1
     icon: "mdi:radiator"
     
 sensor:
